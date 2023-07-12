@@ -1,4 +1,4 @@
-from tensorflow.keras.optimizers import Adam, SGD, RMSProp
+from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 
 """
     Model Config in JSON format
@@ -19,6 +19,7 @@ CFG = {
         "metrics": ["accuracy"],
         "loss": "binary_crossentropy",
         "epochs": 30,
+        "validation_split": 0.2
     },
     "model": {
         "input_shape": (28, 28, 1),
@@ -28,7 +29,29 @@ CFG = {
                 "units": 64,
                 "activation": "relu",
                 "name": "layer_1",
+            },
+            "layer_2": {
+                "type": "Dense",
+                "units": 32,
+                "activation": "relu",
+                "name": "layer_2",
+            },
+            "layer_3": {
+                "type": "Dense",
+                "units": 16,
+                "activation": "relu",
+                "name": "layer_3",
+            },
+            "layer_4": {
+                "type": "Dense",
+                "units": 1,
+                "activation": "sigmoid",
+                "name": "output_layer",
             }
         }
     }
 }
+
+
+
+print(CFG)
