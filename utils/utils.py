@@ -23,11 +23,7 @@ class Config:
             Config: The constructed Config object.
         """
 
-        # Convert the JSON string to a Python dictionary
-        params_dict = json.loads(json_str)
-
-        # Create a HelperObject from the dictionary
-        params = HelperObject(params_dict)
+        params = json.loads(json.dumps(json_str), object_hook=HelperObject)
 
         # Create and return a Config object using the data, train, and model parameters from the HelperObject
         return cls(params.data, params.train, params.model)

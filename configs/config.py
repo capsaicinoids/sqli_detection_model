@@ -1,5 +1,3 @@
-from tensorflow.keras.optimizers import Adam, SGD, RMSprop
-
 """
     Model Config in JSON format
 """
@@ -14,7 +12,7 @@ CFG: dict = {
     },
     "train": {
         "optimizer": {
-            "type": Adam(),
+            "type": 'adam',
         },
         "metrics": ["accuracy"],
         "loss": "binary_crossentropy",

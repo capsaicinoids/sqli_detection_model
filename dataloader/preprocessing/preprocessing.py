@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 class Preprocessing():
@@ -10,6 +9,6 @@ class Preprocessing():
     @staticmethod
     def load_data(data_config):
         data = pd.read_csv(data_config.path)
-        data['Label'] = data['Label'].apply(Preprocessing.preprocessing)
+        data['Sentence'] = data['Sentence'].apply(Preprocessing.preprocessing)
 
         return data
