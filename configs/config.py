@@ -4,9 +4,9 @@ from tensorflow.keras.optimizers import Adam, SGD, RMSprop
     Model Config in JSON format
 """
 
-CFG = {
+CFG: dict = {
     "data": {
-        "path": "",
+        "path": "dataloader/wrangling/processed_datasets/cleaned_sqli.csv",
         "batch_size": 32,
         "shuffle": True,
         "buffer_size": None,
@@ -51,3 +51,6 @@ CFG = {
         }
     }
 }
+
+
+# Metrics = [confusion_matrix, accuracy, precision, recall, f1_score]
