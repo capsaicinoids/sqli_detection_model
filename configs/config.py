@@ -8,11 +8,20 @@ CFG: dict = {
         "batch_size": 32,
         "shuffle": True,
         "buffer_size": None,
-        "train_size": 0.8
+        "train_size": 0.8,
+        "tokenization": {
+            "vocab_size": 5000,
+            "embedding_dim": 128,
+            "max_length": 400,
+            "trunc_type": 'post',
+            "padding_type": 'post',
+            "oov_tok": "<OOV>"
+        }
     },
     "train": {
         "optimizer": {
             "type": 'adam',
+            "learning_rate": 0.001
         },
         "metrics": ["accuracy"],
         "loss": "binary_crossentropy",
@@ -20,28 +29,23 @@ CFG: dict = {
         "validation_split": 0.2
     },
     "model": {
-        "input_shape": (28, 28, 1),
         "dense_layers": {
             "layer_1": {
-                "type": "Dense",
                 "units": 64,
                 "activation": "relu",
                 "name": "layer_1",
             },
             "layer_2": {
-                "type": "Dense",
                 "units": 32,
                 "activation": "relu",
                 "name": "layer_2",
             },
             "layer_3": {
-                "type": "Dense",
                 "units": 16,
                 "activation": "relu",
                 "name": "layer_3",
             },
             "layer_4": {
-                "type": "Dense",
                 "units": 1,
                 "activation": "sigmoid",
                 "name": "output_layer",

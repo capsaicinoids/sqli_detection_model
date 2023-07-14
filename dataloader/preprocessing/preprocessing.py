@@ -11,4 +11,4 @@ class Preprocessing():
         data = pd.read_csv(data_config.path)
         data['Sentence'] = data['Sentence'].apply(Preprocessing.preprocessing)
 
-        return data
+        return data 
