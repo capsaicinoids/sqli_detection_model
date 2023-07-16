@@ -17,10 +17,10 @@ class BaseModel(ABC):
     def build_model(self):
         pass
 
-    # @abstractmethod
-    # def train_model(self):
-    #     pass
+    @abstractmethod
+    def train_model(self):
+        pass
 
-    # @abstractmethod
-    # def evaluate_model(self):
-    #     pass
+    @abstractmethod
+    def evaluate_model(self):
+        pass

@@ -25,8 +25,10 @@ CFG: dict = {
         },
         "metrics": ["accuracy"],
         "loss": "binary_crossentropy",
-        "epochs": 30,
-        "validation_split": 0.2
+        "epochs": 5,
+        "validation_split": 0.2,
+        "verbose": 1,
+        "steps_per_epoch": 100
     },
     "model": {
         "dense_layers": {

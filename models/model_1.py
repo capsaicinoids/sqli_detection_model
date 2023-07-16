@@ -11,18 +11,44 @@ class Model1(BaseModel):
     def __init__(self, config):
         super().__init__(config)
         self.dataset = Preprocessing().load_data(self.config.data)
+        self.model = None
         self.tokenizer = None
     
     def load_data(self):
+        """
+        Load and prepare the data for training and testing.
+
+        Returns:
+            X_train (ndarray): The training data.
+            X_test (ndarray): The testing data.
+            y_train (ndarray): The training labels.
+            y_test (ndarray): The testing labels.
+        """
+
         dataset = self.dataset
-        query = dataset['Sentence'].values
-        labels = dataset['Label'].values
+        sample_size = int(len(dataset) * 0.2)
+
+        # query = dataset['Sentence'].values
+        # labels = dataset['Label'].values
+        
+        # Take 20% of the data
+        query = dataset.iloc[:sample_size]['Sentence'].values
+        labels = dataset.iloc[:sample_size]['Label'].values
 
         X_train, X_test, y_train, y_test = train_test_split(query, labels, train_size=self.config.data.train_size, random_state=42, shuffle=self.config.data.shuffle)
 
         return X_train, X_test, y_train, y_test
     
     def tokenize_data(self):
+        """
+        Tokenizes the data by converting the text queries into sequences of integers using a tokenizer. 
+
+        Returns:
+            train_padded (numpy.ndarray): The padded sequences of integers representing the training queries.
+            training_labels (list): The labels corresponding to the training queries.
+            validation_padded (numpy.ndarray): The padded sequences of integers representing the validation queries.
+            validation_labels (list): The labels corresponding to the validation queries.
+        """
         training_query, training_labels = self.load_data()[0], self.load_data()[2]
         validation_query, validation_labels = self.load_data()[1], self.load_data()[3]
 
@@ -41,6 +67,28 @@ class Model1(BaseModel):
 
         return train_padded, training_labels, validation_padded, validation_labels
 
-     
     def build_model(self):
+        model = tf.keras.Sequential([
+            tf.keras.layers.Embedding(self.config.data.tokenization.vocab_size , self.config.data.tokenization.embedding_dim, input_length=self.config.data.tokenization.max_length),
+            tf.keras.layers.Dropout(0.2),
+            tf.keras.layers.GlobalAveragePooling1D(),
+            tf.keras.layers.Dropout(0.2),
+            tf.keras.layers.Dense(1, activation='sigmoid')
+        ])
+
+        self.model = model
+
+    def train_model(self):
+        train_padded, training_labels, validation_padded, validation_labels = self.tokenize_data()
+
+        self.model.compile(optimizer=self.config.train.optimizer.type, loss=self.config.train.loss, metrics=self.config.train.metrics)
+        model_history = self.model.fit(
+            train_padded, training_labels, epochs=self.config.train.epochs, 
+            validation_data=(validation_padded, validation_labels), validation_split=self.config.train.validation_split, 
+            verbose=self.config.train.verbose, steps_per_epoch=self.config.train.steps_per_epoch
+        )
+
+        return model_history.history['loss'], model_history.history['val_loss']
+
+    def evaluate_model(self):
         pass
