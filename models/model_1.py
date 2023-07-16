@@ -1,6 +1,7 @@
 from .base_model import BaseModel
 from dataloader.preprocessing.preprocessing import Preprocessing
 
+import pickle
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -26,12 +27,12 @@ class Model1(BaseModel):
         """
 
         dataset = self.dataset
-        sample_size = int(len(dataset) * 0.2)
 
         # query = dataset['Sentence'].values
         # labels = dataset['Label'].values
         
         # Take 20% of the data
+        sample_size = int(len(dataset) * 0.2)
         query = dataset.iloc[:sample_size]['Sentence'].values
         labels = dataset.iloc[:sample_size]['Label'].values
 
@@ -68,6 +69,19 @@ class Model1(BaseModel):
         return train_padded, training_labels, validation_padded, validation_labels
 
     def build_model(self):
+        """
+        Builds and initializes a Keras Sequential model.
+
+        This function creates a Keras Sequential model by stacking various layers.
+        The layers include an Embedding layer, Dropout layers, a GlobalAveragePooling1D layer, and a Dense layer.
+        The model is then assigned to the 'model' attribute of the current object.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         model = tf.keras.Sequential([
             tf.keras.layers.Embedding(self.config.data.tokenization.vocab_size , self.config.data.tokenization.embedding_dim, input_length=self.config.data.tokenization.max_length),
             tf.keras.layers.Dropout(0.2),
@@ -79,6 +93,15 @@ class Model1(BaseModel):
         self.model = model
 
     def train_model(self):
+        """
+        Train the model using the tokenized data and return the training and validation loss.
+
+        Parameters:
+            None
+
+        Returns:
+            A tuple containing the training and validation loss as lists.
+        """
         train_padded, training_labels, validation_padded, validation_labels = self.tokenize_data()
 
         self.model.compile(optimizer=self.config.train.optimizer.type, loss=self.config.train.loss, metrics=self.config.train.metrics)
@@ -91,4 +114,9 @@ class Model1(BaseModel):
         return model_history.history['loss'], model_history.history['val_loss']
 
     def evaluate_model(self):
-        pass
+        if self.config.model.save_model_path:
+            self.model.save(self.config.model.save_model_path)
+        
+        if self.config.model.save_tokenization_path:
+            with open(self.config.model.save_tokenization_path, 'wb') as f:
+                pickle.dump(self.tokenizer, f)

@@ -25,7 +25,7 @@ CFG: dict = {
         },
         "metrics": ["accuracy"],
         "loss": "binary_crossentropy",
-        "epochs": 5,
+        "epochs": 1,
         "validation_split": 0.2,
         "verbose": 1,
         "steps_per_epoch": 100
@@ -52,7 +52,9 @@ CFG: dict = {
                 "activation": "sigmoid",
                 "name": "output_layer",
             }
-        }
+        },
+        "save_model_path": "models/model_1.h5",
+        "save_tokenization_path": "models/tokenization.pickle",
     }
 }
 
